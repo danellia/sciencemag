@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Science</title>
+</head>
+<body> 
+    <div class="contents"> 
+        <link href="styles.css" type="text/css" rel="stylesheet" />
+        <div>
+            <button onclick="getArticles()">All Articles</button>
+            <button onclick="getTopArticles()">Top Articles</button>
+            <input type="text" id="searchByTitle" onkeyup="searchByTitle()" placeholder="Search by title...">
+            
+            <div class="dropdown">
+                <button onclick="showAuthorsList()" class="dropbtn">Dropdown</button>
+                <div id="myDropdown" class="dropdown-content">
+                <a href="#">Link 1</a>
+                <a href="#">Link 2</a>
+                <a href="#">Link 3</a>
+                </div>
+            </div>
+        </div>
+        <div>
+            <input type="date" id="datePickerStart">
+            <input type="date" id="datePickerEnd">
+            <button onclick="getArticlesByDate()">Find by date</button>
+        </div>
+        <script>
+            function showAuthorsList() {
+                document.getElementById("myDropdown").classList.toggle("show");
+            }
+            window.onclick = function (event) {
+                if (!event.target.matches('.dropbtn')) {
+                    var dropdowns = document.getElementsByClassName("dropdown-content");
+                    for (var i = 0; i < dropdowns.length; i++) {
+                        var openDropdown = dropdowns[i];
+                        if (openDropdown.classList.contains('show')) {
+                            openDropdown.classList.remove('show');
+                        }
+                    }
+                }
+            }
+        </script> 
+        <div>
+            <ul id="articles"></ul>
+        </div>
+    </div>
+    <script>
+        async function getArticles() {
+            const response = await fetch("/api/main", {
+                method: "GET",
+                headers: { "Accept": "application/json" }
+            })
+            if (response.ok === true) {
+                const articles = await response.json()
+                var div = ""
+                for (var i = 0; i < articles.length; ++i) {
+                    div += block(articles[i], i + 1, 0)
+                }
+                document.getElementById("articles").innerHTML = div
+            }
+        }
+        async function getTopArticles() {
+            const response = await fetch("/api/main", {
+                method: "GET",
+                headers: { "Accept": "application/json" }
+            })
+            if (response.ok === true) {
+                const articles = await response.json()
+                articles.sort(compareNumbers)
+                var div = ""
+                for (var i = 0; i < articles.length; ++i) {
+                    div += block(articles[i], i + 1, 1)   
+                }
+                document.getElementById("articles").innerHTML = div
+            }
+        }
+        function compareNumbers(a, b) {
+            var commentsA = a.comments.length
+            var rateA = 0
+            for (var j = 0; j < commentsA; ++j) {
+                rateA += a.comments[j].rating
+            }
+            var ratingA = rateA/commentsA
+
+            var commentsB = b.comments.length
+            var rateB = 0
+            for (var j = 0; j < commentsB; ++j) {
+                rateB += b.comments[j].rating
+            }
+            var ratingB = rateB/commentsB
+
+            if (ratingB > ratingA) {
+                return 1
+            }
+            if (ratingA < ratingB) {
+                return -1
+            }
+            if (ratingA = ratingB) {
+                if (commentsB > commentsA) {
+                    return 1
+                } else {
+                    return -1
+                }
+            }
+        }
+
+        async function searchByTitle() {
+            let input = document.getElementById('searchByTitle').value.toLowerCase()
+            if (input != "") {
+                const response = await fetch("/api/main/title/" + input, {
+                    method: "GET",
+                    headers: { "Accept": "application/json" }
+                })
+                if (response.ok === true) {
+                    const articles = await response.json()
+                    var div = ""
+                    for (var i = 0; i < articles.length; ++i) {
+                        div += block(articles[i], i + 1, 0)
+                    }
+                    document.getElementById("articles").innerHTML = div
+                }
+            } else {
+                getArticles()
+            }
+        }
+
+        async function getArticlesByDate() {
+            var startDate = document.getElementById('datePickerStart').value
+            var endDate = document.getElementById('datePickerEnd').value
+            if (startDate != "" && endDate != "") {
+                var link = "/api/main/date/" + startDate + "/" + endDate
+                const response = await fetch(link, {
+                    method: "GET",
+                    headers: { "Accept": "application/json" }
+                })
+                if (response.ok === true) {
+                    const articles = await response.json()
+                    var div = ""
+                    for (var i = 0; i < articles.length; ++i) {
+                        div += block(articles[i], i + 1, 0)
+                    }
+                    document.getElementById("articles").innerHTML = div
+                }
+            } else {
+                getArticles()
+            }
+        }
+
+        function block(article, i, comments) {
+            var block = '<li><h2 id="link">' + i + '. ' 
+                        + article.title + '  <a href="/' + article._id + '"><input class="arrow" type="button"></a></h2>' 
+                        + '<p>Authors: '
+            for (var j = 0; j < article.authors.length; ++j) {
+                if (j != article.authors.length - 1) {
+                    block += article.authors[j] + ', '
+                } else {
+                    block += article.authors[j]
+                }
+            }
+            block += '</p><p>Publication date: ' + article.publication_date.slice(0, 10) + '</p>'
+            if (comments === 1) {
+                block += '<p>Comments: ' + article.comments.length + '</p></li>'
+            }
+            return block
+        }
+    </script>
+</body>
+</html>
