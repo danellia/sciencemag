@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>New Article</title>
+</head>
+<body> 
+    <div class="contents">
+        <h2>Add New Article</h2>
+        <p>(all fields are currently required)</p>
+        <form method="POST" action="/newpost/done">
+            <input type="text" name="title" placeholder="Title">
+            <br><br><input type="text" name="author" placeholder="Authors">
+            <br><br><input type="date" name="date">
+            <br><br><input type="text" name="content" placeholder="Text">
+            <br><br><input type="text" name="tags" placeholder="Tags">
+            <br><br><input type="submit" placeholder="Add">
+        </form>
+    </div>
+</body>

@@ -25,6 +25,15 @@ router.get('/:id', async function(req, res) {
     res.send(articles)
 })
 
+//http://localhost:3000/api/main/:id
+router.delete('/:id', function(req, res) {
+    const item = article.findOneAndDelete({
+        _id: req.params.id
+    })
+    console.log(item)
+    res.send("article deleted")
+})
+
 //http://localhost:3000/api/main/date/:datestart/:dateend
 router.get('/date/:datestart/:dateend', async function(req, res) {
     const articles = await article.find({

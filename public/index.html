@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <title>Science</title>
+    <title>Science magazine</title>
 </head>
 <body> 
     <div class="contents"> 
@@ -12,37 +12,38 @@
             <button onclick="getArticles()">All Articles</button>
             <button onclick="getTopArticles()">Top Articles</button>
             <input type="text" id="searchByTitle" onkeyup="searchByTitle()" placeholder="Search by title...">
+            <a href=post.html><button>Add Article</button></a>
             
-            <div class="dropdown">
+            <!--<div class="dropdown">
                 <button onclick="showAuthorsList()" class="dropbtn">Dropdown</button>
                 <div id="myDropdown" class="dropdown-content">
                 <a href="#">Link 1</a>
                 <a href="#">Link 2</a>
                 <a href="#">Link 3</a>
                 </div>
-            </div>
+                <script>
+                    function showAuthorsList() {
+                        document.getElementById("myDropdown").classList.toggle("show");
+                    }
+                    window.onclick = function (event) {
+                        if (!event.target.matches('.dropbtn')) {
+                            var dropdowns = document.getElementsByClassName("dropdown-content");
+                            for (var i = 0; i < dropdowns.length; i++) {
+                                var openDropdown = dropdowns[i];
+                                if (openDropdown.classList.contains('show')) {
+                                    openDropdown.classList.remove('show');
+                                }
+                            }
+                        }
+                    }
+                </script> 
+            </div>-->
         </div>
         <div>
             <input type="date" id="datePickerStart">
             <input type="date" id="datePickerEnd">
             <button onclick="getArticlesByDate()">Find by date</button>
         </div>
-        <script>
-            function showAuthorsList() {
-                document.getElementById("myDropdown").classList.toggle("show");
-            }
-            window.onclick = function (event) {
-                if (!event.target.matches('.dropbtn')) {
-                    var dropdowns = document.getElementsByClassName("dropdown-content");
-                    for (var i = 0; i < dropdowns.length; i++) {
-                        var openDropdown = dropdowns[i];
-                        if (openDropdown.classList.contains('show')) {
-                            openDropdown.classList.remove('show');
-                        }
-                    }
-                }
-            }
-        </script> 
         <div>
             <ul id="articles"></ul>
         </div>
